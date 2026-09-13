@@ -9,7 +9,11 @@
     />
     <title>Contact | PhD. Alonso Pizarro</title>
     <link rel="stylesheet" href="assets/css/styles.css" />
-    <script src="assets/js/main.js?v=20260901" defer></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"
+      defer
+    ></script>
+    <script src="assets/js/main.js?v=20260913" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -113,8 +117,17 @@
             class="form-card contact-form-card"
             id="contact-form"
             data-contact-form
+            data-emailjs-public-key="KP7mPpxrPnFpwfeqH"
+            data-emailjs-service="default_service"
+            data-emailjs-template="template_fgy3af2"
           >
             <h2 class="contact-panel-title">Send a message</h2>
+            <input
+              type="hidden"
+              name="title"
+              value="New website inquiry"
+              data-contact-title
+            />
             <div class="form-grid">
               <div class="field full">
                 <label for="contact-name">Name *</label
@@ -175,11 +188,11 @@
                 ></textarea>
               </div>
               <div class="field full contact-submit-row">
-                <button class="btn btn-primary" type="submit">
+                <button class="btn btn-primary" type="submit" data-submit-button>
                   <img
                     src="Imagenes/Iconos/pagina contacto/send_24dp_FFFFFF_FILL0_wght300_GRAD0_opsz24.svg"
                     alt=""
-                  />Send message
+                  /><span data-submit-label>Send message</span>
                 </button>
               </div>
             </div>

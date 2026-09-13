@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light only" />
+    <meta name="supported-color-schemes" content="light" />
+    <title>{{title}}</title>
+    <style>
+      @media only screen and (max-width: 640px) {
+        .email-shell {
+          width: 100% !important;
+        }
+
+        .email-padding {
+          padding-right: 22px !important;
+          padding-left: 22px !important;
+        }
+
+        .email-title {
+          font-size: 25px !important;
+          line-height: 31px !important;
+        }
+
+        .detail-label,
+        .detail-value {
+          display: block !important;
+          width: 100% !important;
+        }
+
+        .detail-label {
+          padding-bottom: 4px !important;
+        }
+
+        .detail-value {
+          padding-top: 0 !important;
+        }
+      }
+    </style>
+  </head>
+  <body style="margin: 0; padding: 0; background-color: #eef4fa; color: #18324d; font-family: Arial, Helvetica, sans-serif;">
+    <!--
+      EmailJS template settings:
+      Subject: {{title}} - {{name}}
+      Reply-To: {{email}}
+      Variables: {{name}}, {{email}}, {{affiliation}}, {{role}}, {{purpose}}, {{message}}
+    -->
+    <div style="display: none; max-height: 0; overflow: hidden; opacity: 0; color: transparent;">
+      New {{purpose}} inquiry from {{name}}.
+    </div>
+
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%; background-color: #eef4fa;">
+      <tr>
+        <td align="center" style="padding: 32px 12px;">
+          <table class="email-shell" role="presentation" width="640" cellspacing="0" cellpadding="0" border="0" style="width: 640px; max-width: 640px; border: 1px solid #cbdcec; border-radius: 14px; overflow: hidden; background-color: #ffffff; box-shadow: 0 10px 30px rgba(3, 48, 102, 0.08);">
+            <tr>
+              <td class="email-padding" style="padding: 28px 34px; background-color: #033066;">
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                  <tr>
+                    <td style="font-size: 18px; line-height: 24px; font-weight: 700; color: #ffffff;">
+                      PhD Alonso Pizarro
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding-top: 5px; font-size: 12px; line-height: 18px; color: #cfe5ff;">
+                      Hydrology and Complex Hydrosystems
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr>
+              <td class="email-padding" style="padding: 34px 34px 16px;">
+                <div style="margin-bottom: 12px; font-size: 12px; line-height: 18px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: #0056b3;">
+                  New contact-form message
+                </div>
+                <h1 class="email-title" style="margin: 0; font-size: 30px; line-height: 37px; font-weight: 700; color: #033066;">
+                  {{purpose}}
+                </h1>
+                <p style="margin: 13px 0 0; font-size: 15px; line-height: 23px; color: #52687e;">
+                  A new inquiry was submitted through the website contact page.
+                </p>
+              </td>
+            </tr>
+
+            <tr>
+              <td class="email-padding" style="padding: 18px 34px 8px;">
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%; border: 1px solid #d5e2ef; border-radius: 10px; border-collapse: separate; overflow: hidden;">
+                  <tr>
+                    <td class="detail-label" width="34%" valign="top" style="width: 34%; padding: 14px 16px; border-bottom: 1px solid #e2ebf4; background-color: #f4f8fc; font-size: 12px; line-height: 18px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #52687e;">
+                      Name
+                    </td>
+                    <td class="detail-value" valign="top" style="padding: 14px 16px; border-bottom: 1px solid #e2ebf4; font-size: 15px; line-height: 21px; font-weight: 700; color: #033066;">
+                      {{name}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="detail-label" width="34%" valign="top" style="width: 34%; padding: 14px 16px; border-bottom: 1px solid #e2ebf4; background-color: #f4f8fc; font-size: 12px; line-height: 18px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #52687e;">
+                      Email
+                    </td>
+                    <td class="detail-value" valign="top" style="padding: 14px 16px; border-bottom: 1px solid #e2ebf4; font-size: 15px; line-height: 21px; color: #18324d;">
+                      <a href="mailto:{{email}}" style="color: #0056b3; text-decoration: underline;">{{email}}</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="detail-label" width="34%" valign="top" style="width: 34%; padding: 14px 16px; border-bottom: 1px solid #e2ebf4; background-color: #f4f8fc; font-size: 12px; line-height: 18px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #52687e;">
+                      Affiliation
+                    </td>
+                    <td class="detail-value" valign="top" style="padding: 14px 16px; border-bottom: 1px solid #e2ebf4; font-size: 15px; line-height: 21px; color: #18324d;">
+                      {{affiliation}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="detail-label" width="34%" valign="top" style="width: 34%; padding: 14px 16px; border-bottom: 1px solid #e2ebf4; background-color: #f4f8fc; font-size: 12px; line-height: 18px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #52687e;">
+                      Role
+                    </td>
+                    <td class="detail-value" valign="top" style="padding: 14px 16px; border-bottom: 1px solid #e2ebf4; font-size: 15px; line-height: 21px; color: #18324d;">
+                      {{role}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="detail-label" width="34%" valign="top" style="width: 34%; padding: 14px 16px; background-color: #f4f8fc; font-size: 12px; line-height: 18px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #52687e;">
+                      Reason for contact
+                    </td>
+                    <td class="detail-value" valign="top" style="padding: 14px 16px; font-size: 15px; line-height: 21px; color: #18324d;">
+                      {{purpose}}
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr>
+              <td class="email-padding" style="padding: 22px 34px 8px;">
+                <div style="margin-bottom: 9px; font-size: 12px; line-height: 18px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; color: #52687e;">
+                  Message
+                </div>
+                <div style="padding: 20px; border-left: 4px solid #0b67c2; border-radius: 0 8px 8px 0; background-color: #f4f8fc; font-size: 15px; line-height: 24px; color: #18324d; white-space: pre-wrap; word-break: break-word;">
+                  {{message}}
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td class="email-padding" style="padding: 24px 34px 34px;">
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                  <tr>
+                    <td style="border-radius: 7px; background-color: #0056b3;">
+                      <a href="mailto:{{email}}" style="display: inline-block; padding: 12px 20px; font-size: 14px; line-height: 20px; font-weight: 700; color: #ffffff; text-decoration: none;">
+                        Reply to {{name}}
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <tr>
+              <td class="email-padding" style="padding: 20px 34px; border-top: 1px solid #dbe6f0; background-color: #f7fafc; font-size: 12px; line-height: 19px; color: #6b7f92;">
+                This notification was generated by the contact form at
+                <a href="https://alonsopizarro.cl" style="color: #0056b3; text-decoration: none;">alonsopizarro.cl</a>.
+                You can reply directly to this email to contact the sender.
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

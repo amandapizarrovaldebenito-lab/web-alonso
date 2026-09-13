@@ -661,12 +661,80 @@ document.querySelectorAll("[data-reveal-toggle]").forEach((toggle) => {
 
 document.querySelectorAll("[data-contact-form]").forEach((form) => {
   const status = form.querySelector("[data-form-status]");
-  form.addEventListener("submit", (event) => {
+  const submitButton = form.querySelector("[data-submit-button], button[type='submit']");
+  const submitLabel = submitButton?.querySelector("[data-submit-label]");
+  const defaultSubmitLabel = submitLabel?.textContent || "Send message";
+  const publicKey = form.dataset.emailjsPublicKey;
+  const serviceID = form.dataset.emailjsService;
+  const templateID = form.dataset.emailjsTemplate;
+  let emailJSInitialized = false;
+
+  const showFormStatus = (message, type = "") => {
+    if (!status) return;
+    status.textContent = message;
+    status.classList.toggle("is-success", type === "success");
+    status.classList.toggle("is-error", type === "error");
+    status.focus();
+  };
+
+  const setSubmitting = (isSubmitting) => {
+    if (submitButton) submitButton.disabled = isSubmitting;
+    if (submitLabel) {
+      submitLabel.textContent = isSubmitting ? "Sending..." : defaultSubmitLabel;
+    }
+  };
+
+  form.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (!form.reportValidity()) return;
-    if (status) {
-      status.textContent = "El formulario está listo. Falta conectar un servicio de envío para procesar el mensaje.";
-      status.focus();
+
+    if (!publicKey || !serviceID || !templateID) {
+      showFormStatus(
+        "This form is not connected to an email service yet.",
+        "error",
+      );
+      return;
+    }
+
+    if (!window.emailjs) {
+      showFormStatus(
+        "The email service could not be loaded. Please check your connection and try again.",
+        "error",
+      );
+      return;
+    }
+
+    const purpose = form.elements.namedItem("purpose")?.value.trim();
+    const titleInput = form.elements.namedItem("title");
+    if (titleInput) {
+      titleInput.value = purpose
+        ? `New website inquiry: ${purpose}`
+        : "New website inquiry";
+    }
+
+    setSubmitting(true);
+    showFormStatus("Sending your message...");
+
+    try {
+      if (!emailJSInitialized) {
+        window.emailjs.init(publicKey);
+        emailJSInitialized = true;
+      }
+
+      await window.emailjs.sendForm(serviceID, templateID, form);
+      form.reset();
+      showFormStatus(
+        "Your message has been sent successfully. Thank you for getting in touch.",
+        "success",
+      );
+    } catch (error) {
+      console.error("EmailJS contact form error:", error);
+      showFormStatus(
+        "We couldn't send your message. Please try again or contact Alonso by email.",
+        "error",
+      );
+    } finally {
+      setSubmitting(false);
     }
   });
 });

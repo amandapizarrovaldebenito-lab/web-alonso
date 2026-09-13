@@ -1681,6 +1681,14 @@ button {
   font-weight: 700;
 }
 
+.form-status.is-success {
+  color: #176b3a;
+}
+
+.form-status.is-error {
+  color: #a4262c;
+}
+
 .sidebar-stack {
   display: grid;
   gap: 1rem;
@@ -1958,6 +1966,11 @@ button {
 
 .contact-submit-row .btn {
   width: 100%;
+}
+
+.contact-submit-row .btn:disabled {
+  cursor: wait;
+  opacity: 0.72;
 }
 
 .contact-form-card .form-status {
