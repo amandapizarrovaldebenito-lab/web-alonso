@@ -1,10 +1,12 @@
+const translateUi = (value) => window.siteI18n?.translate(value) || value;
+
 const menuButton = document.querySelector("[data-menu-toggle]");
 const mainNav = document.querySelector("[data-main-nav]");
 
 if (menuButton && mainNav) {
   const closeMainMenu = (restoreFocus = false) => {
     menuButton.setAttribute("aria-expanded", "false");
-    menuButton.setAttribute("aria-label", "Open navigation");
+    menuButton.setAttribute("aria-label", translateUi("Open navigation"));
     mainNav.classList.remove("is-open");
     document.body.classList.remove("menu-open");
     mainNav.querySelectorAll("[data-nav-dropdown]").forEach((dropdown) => {
@@ -20,7 +22,7 @@ if (menuButton && mainNav) {
       closeMainMenu();
     } else {
       menuButton.setAttribute("aria-expanded", "true");
-      menuButton.setAttribute("aria-label", "Close navigation");
+      menuButton.setAttribute("aria-label", translateUi("Close navigation"));
       mainNav.classList.add("is-open");
       document.body.classList.add("menu-open");
     }
@@ -200,7 +202,7 @@ document.querySelectorAll("[data-filter-group]").forEach((group) => {
       if (yearToggle) {
         yearToggle.classList.remove("is-active");
         yearToggle.setAttribute("aria-expanded", "false");
-        yearToggle.textContent = "Year";
+        yearToggle.textContent = translateUi("Year");
       }
       yearDropdown?.classList.remove("is-open");
 
@@ -253,7 +255,7 @@ document.querySelectorAll("[data-year-filter]").forEach((dropdown) => {
         filterButton.setAttribute("aria-pressed", "false");
       });
       toggle?.classList.add("is-active");
-      if (toggle) toggle.textContent = `Year: ${year}`;
+      if (toggle) toggle.textContent = translateUi(`Year: ${year}`);
       targets.forEach((target) => {
         target.hidden = !(target.dataset.years || "").split(" ").includes(year);
       });
@@ -332,7 +334,7 @@ document.querySelectorAll("[data-thesis-filters]").forEach((filters) => {
     button.addEventListener("click", () => {
       activeStatus = button.dataset.thesisStatus;
       activeYear = "all";
-      if (yearLabel) yearLabel.textContent = "Year";
+      if (yearLabel) yearLabel.textContent = translateUi("Year");
       yearToggle?.classList.remove("is-active");
       updateStatusButtons();
       closeYearDropdown();
@@ -359,7 +361,7 @@ document.querySelectorAll("[data-thesis-filters]").forEach((filters) => {
     button.addEventListener("click", () => {
       activeYear = button.dataset.thesisYear;
       activeStatus = "all";
-      if (yearLabel) yearLabel.textContent = activeYear === "all" ? "Year" : activeYear;
+      if (yearLabel) yearLabel.textContent = activeYear === "all" ? translateUi("Year") : activeYear;
       yearToggle?.classList.toggle("is-active", activeYear !== "all");
       updateStatusButtons();
       closeYearDropdown();
@@ -421,7 +423,7 @@ document.querySelectorAll("[data-publication-filters]").forEach((filters) => {
 
     if (results) {
       const noun = matchingCards.length === 1 ? "publication" : "publications";
-      results.textContent = `${matchingCards.length} ${noun}${matchingCards.length ? ` · Page ${currentPage} of ${totalPages}` : ""}`;
+      results.textContent = translateUi(`${matchingCards.length} ${noun}${matchingCards.length ? ` · Page ${currentPage} of ${totalPages}` : ""}`);
     }
     if (emptyState) emptyState.hidden = matchingCards.length > 0;
 
@@ -434,7 +436,7 @@ document.querySelectorAll("[data-publication-filters]").forEach((filters) => {
         button.type = "button";
         button.textContent = label;
         button.disabled = Boolean(options.disabled);
-        button.setAttribute("aria-label", options.ariaLabel || `Page ${page}`);
+        button.setAttribute("aria-label", translateUi(options.ariaLabel || `Page ${page}`));
         if (page === currentPage && !options.navigation) button.setAttribute("aria-current", "page");
         button.addEventListener("click", () => {
           currentPage = page;
@@ -449,13 +451,13 @@ document.querySelectorAll("[data-publication-filters]").forEach((filters) => {
 
       addPageButton("←", Math.max(1, currentPage - 1), {
         disabled: currentPage === 1,
-        ariaLabel: "Previous publication page",
+        ariaLabel: translateUi("Previous publication page"),
         navigation: true,
       });
       for (let page = 1; page <= totalPages; page += 1) addPageButton(String(page), page);
       addPageButton("→", Math.min(totalPages, currentPage + 1), {
         disabled: currentPage === totalPages,
-        ariaLabel: "Next publication page",
+        ariaLabel: translateUi("Next publication page"),
         navigation: true,
       });
     }
@@ -508,7 +510,7 @@ document.querySelectorAll("[data-publication-filters]").forEach((filters) => {
         }
         if (button.dataset.publicationYear) {
           activeYear = button.dataset.publicationYear;
-          filters.querySelector("[data-publication-year-label]").textContent = activeYear === "all" ? "Year" : activeYear;
+          filters.querySelector("[data-publication-year-label]").textContent = activeYear === "all" ? translateUi("Year") : activeYear;
         }
         currentPage = 1;
         closeDropdown(dropdown);
@@ -663,7 +665,6 @@ document.querySelectorAll("[data-contact-form]").forEach((form) => {
   const status = form.querySelector("[data-form-status]");
   const submitButton = form.querySelector("[data-submit-button], button[type='submit']");
   const submitLabel = submitButton?.querySelector("[data-submit-label]");
-  const defaultSubmitLabel = submitLabel?.textContent || "Send message";
   const publicKey = form.dataset.emailjsPublicKey;
   const serviceID = form.dataset.emailjsService;
   const templateID = form.dataset.emailjsTemplate;
@@ -680,7 +681,7 @@ document.querySelectorAll("[data-contact-form]").forEach((form) => {
   const setSubmitting = (isSubmitting) => {
     if (submitButton) submitButton.disabled = isSubmitting;
     if (submitLabel) {
-      submitLabel.textContent = isSubmitting ? "Sending..." : defaultSubmitLabel;
+      submitLabel.textContent = isSubmitting ? translateUi("Sending...") : translateUi("Send message");
     }
   };
 
@@ -690,7 +691,7 @@ document.querySelectorAll("[data-contact-form]").forEach((form) => {
 
     if (!publicKey || !serviceID || !templateID) {
       showFormStatus(
-        "This form is not connected to an email service yet.",
+        translateUi("This form is not connected to an email service yet."),
         "error",
       );
       return;
@@ -698,7 +699,7 @@ document.querySelectorAll("[data-contact-form]").forEach((form) => {
 
     if (!window.emailjs) {
       showFormStatus(
-        "The email service could not be loaded. Please check your connection and try again.",
+        translateUi("The email service could not be loaded. Please check your connection and try again."),
         "error",
       );
       return;
@@ -708,12 +709,12 @@ document.querySelectorAll("[data-contact-form]").forEach((form) => {
     const titleInput = form.elements.namedItem("title");
     if (titleInput) {
       titleInput.value = purpose
-        ? `New website inquiry: ${purpose}`
-        : "New website inquiry";
+        ? translateUi(`New website inquiry: ${purpose}`)
+        : translateUi("New website inquiry");
     }
 
     setSubmitting(true);
-    showFormStatus("Sending your message...");
+    showFormStatus(translateUi("Sending your message..."));
 
     try {
       if (!emailJSInitialized) {
@@ -724,13 +725,13 @@ document.querySelectorAll("[data-contact-form]").forEach((form) => {
       await window.emailjs.sendForm(serviceID, templateID, form);
       form.reset();
       showFormStatus(
-        "Your message has been sent successfully. Thank you for getting in touch.",
+        translateUi("Your message has been sent successfully. Thank you for getting in touch."),
         "success",
       );
     } catch (error) {
       console.error("EmailJS contact form error:", error);
       showFormStatus(
-        "We couldn't send your message. Please try again or contact Alonso by email.",
+        translateUi("We couldn't send your message. Please try again or contact Alonso by email."),
         "error",
       );
     } finally {
@@ -762,7 +763,7 @@ document.querySelectorAll("[data-contact-form]").forEach((form) => {
 
     image.src = trigger.dataset.lightboxSrc || thumbnail?.src || "";
     image.alt = thumbnail?.alt || "";
-    title.textContent = trigger.dataset.lightboxTitle || "Preliminary result";
+    title.textContent = translateUi(trigger.dataset.lightboxTitle || "Preliminary result");
     description.textContent = trigger.dataset.lightboxDescription || "";
     counter.textContent = `${currentIndex + 1} / ${triggers.length}`;
   };
