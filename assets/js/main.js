@@ -129,6 +129,18 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
+document
+  .querySelectorAll("#publications-panel tbody, #dissemination-panel tbody")
+  .forEach((tableBody) => {
+    [...tableBody.rows]
+      .sort((rowA, rowB) => {
+        const yearA = Number.parseInt(rowA.cells[1]?.textContent || "0", 10);
+        const yearB = Number.parseInt(rowB.cells[1]?.textContent || "0", 10);
+        return yearB - yearA;
+      })
+      .forEach((row) => tableBody.append(row));
+  });
+
 document.querySelectorAll("[data-accordion-trigger]").forEach((trigger) => {
   trigger.addEventListener("click", () => {
     const panel = document.getElementById(trigger.getAttribute("aria-controls"));
@@ -150,6 +162,11 @@ document.querySelectorAll("[data-accordion-trigger]").forEach((trigger) => {
         });
     }
   });
+});
+
+document.querySelectorAll(".publication-materials .publication-metadata p").forEach((item) => {
+  const label = item.querySelector(":scope > strong")?.textContent.trim();
+  if (label === "Notes" || label === "Notas") item.remove();
 });
 
 document.querySelectorAll(".detail-deliverable-tabs").forEach((tabList) => {
