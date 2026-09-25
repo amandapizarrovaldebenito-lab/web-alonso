@@ -781,7 +781,13 @@ document.querySelectorAll("[data-contact-form]").forEach((form) => {
     image.src = trigger.dataset.lightboxSrc || thumbnail?.src || "";
     image.alt = thumbnail?.alt || "";
     title.textContent = translateUi(trigger.dataset.lightboxTitle || "Preliminary result");
-    description.textContent = trigger.dataset.lightboxDescription || "";
+    description.textContent = translateUi(trigger.dataset.lightboxDescription || "");
+    const attribution = trigger.dataset.lightboxAttribution || "";
+    if (attribution) {
+      const attributionLine = document.createElement("small");
+      attributionLine.textContent = attribution;
+      description.append(document.createElement("br"), attributionLine);
+    }
     counter.textContent = `${currentIndex + 1} / ${triggers.length}`;
   };
 

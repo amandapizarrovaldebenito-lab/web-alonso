@@ -4305,6 +4305,7 @@ button {
 
 .detail-result-copy {
   display: grid;
+  align-content: start;
   gap: 0.25rem;
   padding: 0.9rem 1rem 1rem;
 }
