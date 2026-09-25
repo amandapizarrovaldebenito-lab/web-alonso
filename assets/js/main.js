@@ -1,5 +1,26 @@
 const translateUi = (value) => window.siteI18n?.translate(value) || value;
 
+function enableLocalFileNavigation() {
+  if (window.location.protocol !== "file:") return;
+
+  document.querySelectorAll("a[href]").forEach((link) => {
+    const href = link.getAttribute("href")?.trim();
+    if (!href || /^(?:#|\/\/|[a-z][a-z\d+.-]*:)/i.test(href)) return;
+
+    const suffixIndex = [href.indexOf("?"), href.indexOf("#")]
+      .filter((index) => index >= 0)
+      .reduce((first, index) => Math.min(first, index), href.length);
+    const path = href.slice(0, suffixIndex);
+    const suffix = href.slice(suffixIndex);
+
+    if (path.endsWith("/")) {
+      link.setAttribute("href", `${path}index.html${suffix}`);
+    }
+  });
+}
+
+enableLocalFileNavigation();
+
 const menuButton = document.querySelector("[data-menu-toggle]");
 const mainNav = document.querySelector("[data-main-nav]");
 
