@@ -699,7 +699,192 @@ document.querySelectorAll("[data-reveal-toggle]").forEach((toggle) => {
   });
 });
 
-document.querySelectorAll("[data-contact-form]").forEach((form) => {
+const contactForms = [...document.querySelectorAll("[data-contact-form]")];
+
+const contactFeedbackModal = contactForms.length
+  ? (() => {
+      const stateCopy = {
+        sending: {
+          title: "Sending message",
+          description: "We’re sending your message. Please wait a moment.",
+        },
+        success: {
+          title: "Message sent",
+          description:
+            "Thank you. Your message has been sent successfully. We’ll get back to you soon.",
+        },
+        error: {
+          title: "Message not sent",
+          description:
+            "We couldn’t send your message. Please try again or contact Alonso directly by email.",
+        },
+      };
+
+      const dialog = document.createElement("dialog");
+      dialog.className = "contact-feedback-dialog";
+      dialog.dataset.contactFeedbackDialog = "";
+      dialog.dataset.i18nIgnore = "";
+      dialog.dataset.state = "sending";
+      dialog.setAttribute("aria-labelledby", "contact-feedback-title");
+      dialog.setAttribute("aria-describedby", "contact-feedback-description");
+      dialog.setAttribute("aria-modal", "true");
+      dialog.setAttribute("tabindex", "-1");
+      dialog.innerHTML = `
+        <div class="contact-feedback-panel">
+          <button class="contact-feedback-close" type="button" data-contact-modal-close>
+            <span aria-hidden="true">×</span>
+          </button>
+          <div class="contact-feedback-icon" aria-hidden="true">
+            <span class="contact-feedback-spinner"></span>
+            <svg class="contact-feedback-check" viewBox="0 0 48 48" focusable="false">
+              <circle cx="24" cy="24" r="22"></circle>
+              <path d="m14.5 24.5 6.2 6.2 13.1-14"></path>
+            </svg>
+            <svg class="contact-feedback-error" viewBox="0 0 48 48" focusable="false">
+              <circle cx="24" cy="24" r="22"></circle>
+              <path d="M24 13.5v14"></path>
+              <circle cx="24" cy="34" r="1.5"></circle>
+            </svg>
+          </div>
+          <div class="contact-feedback-copy" aria-live="assertive" aria-atomic="true">
+            <h2 id="contact-feedback-title"></h2>
+            <p id="contact-feedback-description"></p>
+          </div>
+          <div class="contact-feedback-actions">
+            <button class="btn btn-primary" type="button" data-contact-modal-primary></button>
+            <button class="btn btn-secondary" type="button" data-contact-modal-secondary></button>
+          </div>
+        </div>`;
+      document.body.append(dialog);
+
+      const title = dialog.querySelector("#contact-feedback-title");
+      const description = dialog.querySelector("#contact-feedback-description");
+      const closeButton = dialog.querySelector("[data-contact-modal-close]");
+      const primaryButton = dialog.querySelector("[data-contact-modal-primary]");
+      const secondaryButton = dialog.querySelector("[data-contact-modal-secondary]");
+      let state = "sending";
+      let retryCallback = null;
+      let returnFocusTarget = null;
+
+      const focusableElements = () =>
+        [...dialog.querySelectorAll("button:not([disabled]):not([hidden])")].filter(
+          (element) => element.getAttribute("aria-hidden") !== "true",
+        );
+
+      const focusForState = () => {
+        const target = state === "sending" ? dialog : primaryButton;
+        window.requestAnimationFrame(() => target?.focus());
+      };
+
+      const render = () => {
+        const copy = stateCopy[state];
+        dialog.dataset.state = state;
+        dialog.setAttribute("aria-busy", String(state === "sending"));
+        title.textContent = translateUi(copy.title);
+        description.textContent = translateUi(copy.description);
+        closeButton.setAttribute("aria-label", translateUi("Close"));
+        closeButton.hidden = state === "sending";
+        closeButton.disabled = state === "sending";
+
+        primaryButton.hidden = state === "sending";
+        secondaryButton.hidden = state !== "error";
+        if (state === "success") {
+          primaryButton.textContent = translateUi("Dismiss success message");
+        } else if (state === "error") {
+          primaryButton.textContent = translateUi("Try again");
+          secondaryButton.textContent = translateUi("Close");
+        }
+      };
+
+      const restorePageState = () => {
+        document.body.classList.remove("contact-modal-open");
+        const focusTarget = returnFocusTarget;
+        returnFocusTarget = null;
+        retryCallback = null;
+        if (focusTarget?.isConnected) focusTarget.focus();
+      };
+
+      const close = () => {
+        if (state === "sending") return;
+        if (typeof dialog.close === "function") {
+          dialog.close();
+        } else {
+          dialog.removeAttribute("open");
+          restorePageState();
+        }
+      };
+
+      const setState = (nextState) => {
+        state = nextState;
+        render();
+        focusForState();
+      };
+
+      closeButton.addEventListener("click", close);
+      secondaryButton.addEventListener("click", close);
+      primaryButton.addEventListener("click", () => {
+        if (state === "error") {
+          retryCallback?.();
+          return;
+        }
+        close();
+      });
+
+      dialog.addEventListener("cancel", (event) => {
+        event.preventDefault();
+        close();
+      });
+      dialog.addEventListener("close", restorePageState);
+      dialog.addEventListener("keydown", (event) => {
+        if (event.key !== "Tab") return;
+        const focusable = focusableElements();
+        if (!focusable.length) {
+          event.preventDefault();
+          dialog.focus();
+          return;
+        }
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      });
+
+      document.addEventListener("i18n:change", () => {
+        render();
+      });
+
+      return {
+        openSending(origin, onRetry) {
+          returnFocusTarget = origin;
+          retryCallback = onRetry;
+          state = "sending";
+          render();
+          document.body.classList.add("contact-modal-open");
+          if (!dialog.open) {
+            if (typeof dialog.showModal === "function") {
+              dialog.showModal();
+            } else {
+              dialog.setAttribute("open", "");
+            }
+          }
+          focusForState();
+        },
+        showSuccess() {
+          setState("success");
+        },
+        showError() {
+          setState("error");
+        },
+      };
+    })()
+  : null;
+
+contactForms.forEach((form) => {
   const status = form.querySelector("[data-form-status]");
   const submitButton = form.querySelector("[data-submit-button], button[type='submit']");
   const submitLabel = submitButton?.querySelector("[data-submit-label]");
@@ -707,13 +892,13 @@ document.querySelectorAll("[data-contact-form]").forEach((form) => {
   const serviceID = form.dataset.emailjsService;
   const templateID = form.dataset.emailjsTemplate;
   let emailJSInitialized = false;
+  let isSubmitting = false;
 
   const showFormStatus = (message, type = "") => {
     if (!status) return;
     status.textContent = message;
     status.classList.toggle("is-success", type === "success");
     status.classList.toggle("is-error", type === "error");
-    status.focus();
   };
 
   const setSubmitting = (isSubmitting) => {
@@ -725,23 +910,7 @@ document.querySelectorAll("[data-contact-form]").forEach((form) => {
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
-    if (!form.reportValidity()) return;
-
-    if (!publicKey || !serviceID || !templateID) {
-      showFormStatus(
-        translateUi("This form is not connected to an email service yet."),
-        "error",
-      );
-      return;
-    }
-
-    if (!window.emailjs) {
-      showFormStatus(
-        translateUi("The email service could not be loaded. Please check your connection and try again."),
-        "error",
-      );
-      return;
-    }
+    if (isSubmitting || !form.reportValidity()) return;
 
     const purpose = form.elements.namedItem("purpose")?.value.trim();
     const titleInput = form.elements.namedItem("title");
@@ -751,10 +920,20 @@ document.querySelectorAll("[data-contact-form]").forEach((form) => {
         : translateUi("New website inquiry");
     }
 
+    isSubmitting = true;
     setSubmitting(true);
     showFormStatus(translateUi("Sending your message..."));
+    contactFeedbackModal?.openSending(submitButton, () => {
+      if (!isSubmitting) form.requestSubmit(submitButton || undefined);
+    });
 
     try {
+      if (!publicKey || !serviceID || !templateID) {
+        throw new Error("EmailJS form configuration is incomplete.");
+      }
+      if (!window.emailjs) {
+        throw new Error("EmailJS could not be loaded.");
+      }
       if (!emailJSInitialized) {
         window.emailjs.init(publicKey);
         emailJSInitialized = true;
@@ -766,13 +945,16 @@ document.querySelectorAll("[data-contact-form]").forEach((form) => {
         translateUi("Your message has been sent successfully. Thank you for getting in touch."),
         "success",
       );
+      contactFeedbackModal?.showSuccess();
     } catch (error) {
       console.error("EmailJS contact form error:", error);
       showFormStatus(
         translateUi("We couldn't send your message. Please try again or contact Alonso by email."),
         "error",
       );
+      contactFeedbackModal?.showError();
     } finally {
+      isSubmitting = false;
       setSubmitting(false);
     }
   });

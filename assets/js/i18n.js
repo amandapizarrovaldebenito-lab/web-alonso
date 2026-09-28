@@ -789,6 +789,15 @@
     // Dynamic form and pagination messages.
     [`Sending...`, `Enviando...`],
     [`Sending your message...`, `Enviando tu mensaje...`],
+    [`Sending message`, `Enviando consulta`],
+    [`We’re sending your message. Please wait a moment.`, `Estamos enviando tu mensaje. Un momento, por favor.`],
+    [`Message sent`, `Consulta enviada`],
+    [`Thank you. Your message has been sent successfully. We’ll get back to you soon.`, `¡Gracias! Tu consulta fue enviada correctamente. Te responderemos pronto.`],
+    [`Message not sent`, `No se pudo enviar el mensaje`],
+    [`We couldn’t send your message. Please try again or contact Alonso directly by email.`, `No pudimos enviar tu mensaje. Inténtalo nuevamente o contacta directamente a Alonso por correo.`],
+    [`Try again`, `Intentar nuevamente`],
+    [`Dismiss success message`, `Entendido`],
+    [`Close`, `Cerrar`],
     [`This form is not connected to an email service yet.`, `Este formulario aún no está conectado a un servicio de correo.`],
     [`The email service could not be loaded. Please check your connection and try again.`, `No se pudo cargar el servicio de correo. Revisa tu conexión e inténtalo nuevamente.`],
     [`Your message has been sent successfully. Thank you for getting in touch.`, `Tu mensaje fue enviado correctamente. Gracias por contactarte.`],
@@ -945,6 +954,7 @@
 
   const englishPairs = [
     [`Link`, `LINK`],
+    [`Dismiss success message`, `Close`],
     [`investigación`, `research`],
     [`salud sostenible, interdisciplinariedad, Chile, investigación, formación`, `sustainable health, interdisciplinarity, Chile, research, education`],
     [`persistencia`, `persistence`],
