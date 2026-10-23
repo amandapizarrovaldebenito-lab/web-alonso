@@ -429,6 +429,7 @@ document.querySelectorAll("[data-thesis-filters]").forEach((filters) => {
 document.querySelectorAll("[data-publication-filters]").forEach((filters) => {
   const publicationContainer = filters.closest(".container");
   const cards = [...(publicationContainer?.querySelectorAll("[data-publication-card]") || [])];
+  const publicationList = publicationContainer?.querySelector(".research-publication-list");
   const typeButtons = [...filters.querySelectorAll("[data-publication-type]")];
   const dropdowns = [...filters.querySelectorAll("[data-publication-dropdown]")];
   const pagination = publicationContainer?.querySelector("[data-publication-pagination]");
@@ -439,6 +440,11 @@ document.querySelectorAll("[data-publication-filters]").forEach((filters) => {
   let activePeriod = "all";
   let activeYear = "all";
   let currentPage = 1;
+
+  cards.sort((firstCard, secondCard) =>
+    Number(secondCard.dataset.year) - Number(firstCard.dataset.year),
+  );
+  cards.forEach((card) => publicationList?.append(card));
 
   const applyPublicationFilters = () => {
     const currentYear = new Date().getFullYear();
@@ -606,6 +612,7 @@ document.querySelectorAll("[data-collaborator-filters]").forEach((filters) => {
     ["Sebastián Krogh", "Krogh"],
     ["Oscar Link", "Link"],
     ["Pablo Mendoza", "Mendoza"],
+    ["Fanny Petermann-Rocha", "Petermann-Rocha"],
     ["Eduardo Muñoz-Castro", "Muñoz-Castro"],
     ["Mauricio Zambrano-Bigiarini", "Zambrano-Bigiarini"],
     ["Salvatore Manfreda", "Manfreda"],
